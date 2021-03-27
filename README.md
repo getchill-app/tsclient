@@ -1,8 +1,12 @@
 # tsclient
 
+## Install
+
 ```shell
 yarn add @getchill.app/tsclient
 ```
+
+## Usage
 
 ```typescript
 import {Credentials, rpcService, RPCService, certPath, RPCError} from '@getchill.app/tsclient'
