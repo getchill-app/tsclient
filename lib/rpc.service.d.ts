@@ -1,5 +1,6 @@
 /// <reference types="node" />
 import { ServiceClient } from '@grpc/grpc-js/build/src/make-client';
+import { ClientReadableStream } from '@grpc/grpc-js/build/src/call';
 import { EventEmitter } from 'events';
 import * as service from './rpc';
 import { Logger } from 'ts-log';
@@ -19,16 +20,38 @@ export declare class RPCService extends EventEmitter {
     authSetup(req: service.AuthSetupRequest): Promise<service.AuthSetupResponse>;
     authUnlock(req: service.AuthUnlockRequest): Promise<service.AuthUnlockResponse>;
     authLock(req: service.AuthLockRequest): Promise<service.AuthLockResponse>;
-    runtimeStatus(req: service.RuntimeStatusRequest): Promise<service.RuntimeStatusResponse>;
+    authReset(req: service.AuthResetRequest): Promise<service.AuthResetResponse>;
+    status(req: service.StatusRequest): Promise<service.StatusResponse>;
     keyGenerate(req: service.KeyGenerateRequest): Promise<service.KeyGenerateResponse>;
     keys(req: service.KeysRequest): Promise<service.KeysResponse>;
     key(req: service.KeyRequest): Promise<service.KeyResponse>;
     keyImport(req: service.KeyImportRequest): Promise<service.KeyImportResponse>;
     keyExport(req: service.KeyExportRequest): Promise<service.KeyExportResponse>;
     keyRemove(req: service.KeyRemoveRequest): Promise<service.KeyRemoveResponse>;
+    keySearch(req: service.KeySearchRequest): Promise<service.KeySearchResponse>;
     user(req: service.UserRequest): Promise<service.UserResponse>;
     userSearch(req: service.UserSearchRequest): Promise<service.UserSearchResponse>;
     userService(req: service.UserServiceRequest): Promise<service.UserServiceResponse>;
     userSign(req: service.UserSignRequest): Promise<service.UserSignResponse>;
     userAdd(req: service.UserAddRequest): Promise<service.UserAddResponse>;
+    rand(req: service.RandRequest): Promise<service.RandResponse>;
+    randPassword(req: service.RandPasswordRequest): Promise<service.RandPasswordResponse>;
+    pull(req: service.PullRequest): Promise<service.PullResponse>;
+    sigchain(req: service.SigchainRequest): Promise<service.SigchainResponse>;
+    statement(req: service.StatementRequest): Promise<service.StatementResponse>;
+    statementCreate(req: service.StatementCreateRequest): Promise<service.StatementCreateResponse>;
+    statementRevoke(req: service.StatementRevokeRequest): Promise<service.StatementRevokeResponse>;
+    authProvision(req: service.AuthProvisionRequest): Promise<service.AuthProvisionResponse>;
+    authDeprovision(req: service.AuthDeprovisionRequest): Promise<service.AuthDeprovisionResponse>;
+    authProvisions(req: service.AuthProvisionsRequest): Promise<service.AuthProvisionsResponse>;
+    authPasswordChange(req: service.AuthPasswordChangeRequest): Promise<service.AuthPasswordChangeResponse>;
+    channels(req: service.ChannelsRequest): Promise<service.ChannelsResponse>;
+    channelCreate(req: service.ChannelCreateRequest): Promise<service.ChannelCreateResponse>;
+    channelInvite(req: service.ChannelInviteRequest): Promise<service.ChannelInviteResponse>;
+    channelLeave(req: service.ChannelLeaveRequest): Promise<service.ChannelLeaveResponse>;
+    channelRead(req: service.ChannelReadRequest): Promise<service.ChannelReadResponse>;
+    messagePrepare(req: service.MessagePrepareRequest): Promise<service.MessagePrepareResponse>;
+    messageCreate(req: service.MessageCreateRequest): Promise<service.MessageCreateResponse>;
+    messages(req: service.MessagesRequest): Promise<service.MessagesResponse>;
+    relay(req: service.RelayRequest): ClientReadableStream<service.RelayOutput>;
 }

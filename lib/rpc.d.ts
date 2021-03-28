@@ -27,6 +27,21 @@ export declare enum UserStatus {
     USER_CONN_FAILURE = "USER_CONN_FAILURE",
     USER_FAILURE = "USER_FAILURE"
 }
+export declare enum Encoding {
+    HEX = "HEX",
+    BASE62 = "BASE62",
+    BASE58 = "BASE58",
+    BASE32 = "BASE32",
+    BASE16 = "BASE16",
+    BASE64 = "BASE64",
+    SALTPACK = "SALTPACK",
+    BIP39 = "BIP39"
+}
+export declare enum MessageStatus {
+    MESSAGE_SENT = "MESSAGE_SENT",
+    MESSAGE_PENDING = "MESSAGE_PENDING",
+    MESSAGE_ERROR = "MESSAGE_ERROR"
+}
 export interface AuthSetupRequest {
     secret?: string;
     type?: AuthType;
@@ -46,9 +61,14 @@ export interface AuthLockRequest {
 }
 export interface AuthLockResponse {
 }
-export interface RuntimeStatusRequest {
+export interface AuthResetRequest {
+    appName?: string;
 }
-export interface RuntimeStatusResponse {
+export interface AuthResetResponse {
+}
+export interface StatusRequest {
+}
+export interface StatusResponse {
     version?: string;
     appName?: string;
     exe?: string;
@@ -178,20 +198,212 @@ export interface Statement {
     timestamp?: number;
     type?: string;
 }
+export interface RandRequest {
+    numBytes?: number;
+    encoding?: Encoding;
+    noPadding?: boolean;
+    lowercase?: boolean;
+}
+export interface RandResponse {
+    data?: string;
+}
+export interface RandPasswordRequest {
+    length?: number;
+}
+export interface RandPasswordResponse {
+    password?: string;
+}
+export interface AuthProvisionRequest {
+    secret?: string;
+    type?: AuthType;
+    device?: string;
+    generate?: boolean;
+}
+export interface AuthProvisionResponse {
+    provision?: AuthProvision;
+}
+export interface AuthDeprovisionRequest {
+    id?: string;
+}
+export interface AuthDeprovisionResponse {
+}
+export interface AuthPasswordChangeRequest {
+    old?: string;
+    new?: string;
+}
+export interface AuthPasswordChangeResponse {
+}
+export interface AuthProvision {
+    id?: string;
+    type?: AuthType;
+    createdAt?: number;
+    aaguid?: string;
+    noPin?: boolean;
+}
+export interface AuthProvisionsRequest {
+}
+export interface AuthProvisionsResponse {
+    provisions?: Array<AuthProvision>;
+}
+export interface KeySearchRequest {
+    query?: string;
+}
+export interface KeySearchResponse {
+    keys?: Array<Key>;
+}
+export interface PullRequest {
+    key?: string;
+}
+export interface PullResponse {
+    kids?: Array<string>;
+}
+export interface SigchainRequest {
+    kid?: string;
+}
+export interface SigchainResponse {
+    key?: Key;
+    statements?: Array<Statement>;
+}
+export interface StatementRequest {
+    kid?: string;
+    seq?: number;
+}
+export interface StatementResponse {
+    statement?: Statement;
+}
+export interface StatementCreateRequest {
+    data?: Uint8Array;
+    kid?: string;
+    local?: boolean;
+}
+export interface StatementCreateResponse {
+    statement?: Statement;
+}
+export interface StatementRevokeRequest {
+    seq?: number;
+    kid?: string;
+    local?: boolean;
+}
+export interface StatementRevokeResponse {
+    statement?: Statement;
+}
+export interface Message {
+    id?: string;
+    sender?: Key;
+    text?: Array<string>;
+    status?: MessageStatus;
+    createdAt?: number;
+}
+export interface MessagePrepareRequest {
+    sender?: string;
+    channel?: string;
+    text?: string;
+}
+export interface MessagePrepareResponse {
+    message?: Message;
+}
+export interface MessageCreateRequest {
+    sender?: string;
+    channel?: string;
+    id?: string;
+    text?: string;
+}
+export interface MessageCreateResponse {
+    message?: Message;
+}
+export interface MessagesRequest {
+    channel?: string;
+    update?: boolean;
+}
+export interface MessagesResponse {
+    messages?: Array<Message>;
+}
+export interface Channel {
+    id?: string;
+    name?: string;
+    snippet?: string;
+    updatedAt?: number;
+    index?: number;
+    readIndex?: number;
+}
+export interface ChannelsRequest {
+    user?: string;
+}
+export interface ChannelsResponse {
+    channels?: Array<Channel>;
+}
+export interface ChannelCreateRequest {
+    name?: string;
+    user?: string;
+}
+export interface ChannelCreateResponse {
+    channel?: Channel;
+}
+export interface ChannelLeaveRequest {
+    channel?: string;
+}
+export interface ChannelLeaveResponse {
+}
+export interface ChannelReadRequest {
+    channel?: string;
+    index?: number;
+}
+export interface ChannelReadResponse {
+}
+export interface ChannelInviteRequest {
+    channel?: string;
+    recipients?: Array<string>;
+    sender?: string;
+}
+export interface ChannelInviteResponse {
+    message?: Message;
+}
+export interface RelayRequest {
+    keys?: Array<string>;
+}
+export interface RelayOutput {
+    kid?: string;
+    index?: number;
+}
 export interface RPCService {
     AuthSetup: (r: AuthSetupRequest) => AuthSetupResponse;
     AuthUnlock: (r: AuthUnlockRequest) => AuthUnlockResponse;
     AuthLock: (r: AuthLockRequest) => AuthLockResponse;
-    RuntimeStatus: (r: RuntimeStatusRequest) => RuntimeStatusResponse;
+    AuthReset: (r: AuthResetRequest) => AuthResetResponse;
+    Status: (r: StatusRequest) => StatusResponse;
     KeyGenerate: (r: KeyGenerateRequest) => KeyGenerateResponse;
     Keys: (r: KeysRequest) => KeysResponse;
     Key: (r: KeyRequest) => KeyResponse;
     KeyImport: (r: KeyImportRequest) => KeyImportResponse;
     KeyExport: (r: KeyExportRequest) => KeyExportResponse;
     KeyRemove: (r: KeyRemoveRequest) => KeyRemoveResponse;
+    KeySearch: (r: KeySearchRequest) => KeySearchResponse;
     User: (r: UserRequest) => UserResponse;
     UserSearch: (r: UserSearchRequest) => UserSearchResponse;
     UserService: (r: UserServiceRequest) => UserServiceResponse;
     UserSign: (r: UserSignRequest) => UserSignResponse;
     UserAdd: (r: UserAddRequest) => UserAddResponse;
+    Rand: (r: RandRequest) => RandResponse;
+    RandPassword: (r: RandPasswordRequest) => RandPasswordResponse;
+    Pull: (r: PullRequest) => PullResponse;
+    Sigchain: (r: SigchainRequest) => SigchainResponse;
+    Statement: (r: StatementRequest) => StatementResponse;
+    StatementCreate: (r: StatementCreateRequest) => StatementCreateResponse;
+    StatementRevoke: (r: StatementRevokeRequest) => StatementRevokeResponse;
+    AuthProvision: (r: AuthProvisionRequest) => AuthProvisionResponse;
+    AuthDeprovision: (r: AuthDeprovisionRequest) => AuthDeprovisionResponse;
+    AuthProvisions: (r: AuthProvisionsRequest) => AuthProvisionsResponse;
+    AuthPasswordChange: (r: AuthPasswordChangeRequest) => AuthPasswordChangeResponse;
+    Channels: (r: ChannelsRequest) => ChannelsResponse;
+    ChannelCreate: (r: ChannelCreateRequest) => ChannelCreateResponse;
+    ChannelInvite: (r: ChannelInviteRequest) => ChannelInviteResponse;
+    ChannelLeave: (r: ChannelLeaveRequest) => ChannelLeaveResponse;
+    ChannelRead: (r: ChannelReadRequest) => ChannelReadResponse;
+    MessagePrepare: (r: MessagePrepareRequest) => MessagePrepareResponse;
+    MessageCreate: (r: MessageCreateRequest) => MessageCreateResponse;
+    Messages: (r: MessagesRequest) => MessagesResponse;
+    Relay: (r: RelayRequest, cb: (a: {
+        value: RelayOutput;
+        done: boolean;
+    }) => void) => void;
 }
