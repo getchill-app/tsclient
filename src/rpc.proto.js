@@ -158,6 +158,14 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
             requestType: "RelayRequest",
             responseType: "RelayOutput",
             responseStream: true
+          },
+          Collections: {
+            requestType: "CollectionsRequest",
+            responseType: "CollectionsResponse"
+          },
+          Documents: {
+            requestType: "DocumentsRequest",
+            responseType: "DocumentsResponse"
           }
         }
       },
@@ -1077,13 +1085,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
       },
       MessagePrepareRequest: {
         fields: {
-          sender: {
-            type: "string",
-            id: 1
-          },
           channel: {
             type: "string",
-            id: 2
+            id: 1
           },
           text: {
             type: "string",
@@ -1101,13 +1105,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
       },
       MessageCreateRequest: {
         fields: {
-          sender: {
-            type: "string",
-            id: 1
-          },
           channel: {
             type: "string",
-            id: 2
+            id: 1
           },
           id: {
             type: "string",
@@ -1183,12 +1183,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
         }
       },
       ChannelsRequest: {
-        fields: {
-          user: {
-            type: "string",
-            id: 1
-          }
-        }
+        fields: {}
       },
       ChannelsResponse: {
         fields: {
@@ -1204,10 +1199,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
           name: {
             type: "string",
             id: 1
-          },
-          user: {
-            type: "string",
-            id: 2
           }
         }
       },
@@ -1255,10 +1246,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
             rule: "repeated",
             type: "string",
             id: 2
-          },
-          sender: {
-            type: "string",
-            id: 3
           }
         }
       },
@@ -1271,26 +1258,93 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
         }
       },
       RelayRequest: {
+        fields: {}
+      },
+      RelayOutput: {
         fields: {
-          keys: {
-            rule: "repeated",
+          channel: {
+            type: "string",
+            id: 1
+          },
+          index: {
+            type: "int64",
+            id: 2
+          }
+        }
+      },
+      Collection: {
+        fields: {
+          path: {
             type: "string",
             id: 1
           }
         }
       },
-      RelayOutput: {
+      CollectionsRequest: {
         fields: {
-          kid: {
+          parent: {
             type: "string",
-            id: 1,
-            options: {
-              "(go.field).name": "KID"
-            }
+            id: 1
           },
-          index: {
-            type: "int64",
+          db: {
+            type: "string",
+            id: 5,
+            options: {
+              "(go.field).name": "DB"
+            }
+          }
+        }
+      },
+      CollectionsResponse: {
+        fields: {
+          collections: {
+            rule: "repeated",
+            type: "Collection",
+            id: 1
+          }
+        }
+      },
+      Document: {
+        fields: {
+          path: {
+            type: "string",
+            id: 1
+          },
+          value: {
+            type: "string",
             id: 2
+          },
+          createdAt: {
+            type: "int64",
+            id: 10
+          },
+          updatedAt: {
+            type: "int64",
+            id: 11
+          }
+        }
+      },
+      DocumentsRequest: {
+        fields: {
+          path: {
+            type: "string",
+            id: 1
+          },
+          db: {
+            type: "string",
+            id: 5,
+            options: {
+              "(go.field).name": "DB"
+            }
+          }
+        }
+      },
+      DocumentsResponse: {
+        fields: {
+          documents: {
+            rule: "repeated",
+            type: "Document",
+            id: 1
           }
         }
       }

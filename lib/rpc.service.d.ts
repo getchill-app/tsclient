@@ -54,4 +54,6 @@ export declare class RPCService extends EventEmitter {
     messageCreate(req: service.MessageCreateRequest): Promise<service.MessageCreateResponse>;
     messages(req: service.MessagesRequest): Promise<service.MessagesResponse>;
     relay(req: service.RelayRequest): ClientReadableStream<service.RelayOutput>;
+    collections(req: service.CollectionsRequest): Promise<service.CollectionsResponse>;
+    documents(req: service.DocumentsRequest): Promise<service.DocumentsResponse>;
 }

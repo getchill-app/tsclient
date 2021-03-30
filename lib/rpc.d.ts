@@ -295,7 +295,6 @@ export interface Message {
     createdAt?: number;
 }
 export interface MessagePrepareRequest {
-    sender?: string;
     channel?: string;
     text?: string;
 }
@@ -303,7 +302,6 @@ export interface MessagePrepareResponse {
     message?: Message;
 }
 export interface MessageCreateRequest {
-    sender?: string;
     channel?: string;
     id?: string;
     text?: string;
@@ -327,14 +325,12 @@ export interface Channel {
     readIndex?: number;
 }
 export interface ChannelsRequest {
-    user?: string;
 }
 export interface ChannelsResponse {
     channels?: Array<Channel>;
 }
 export interface ChannelCreateRequest {
     name?: string;
-    user?: string;
 }
 export interface ChannelCreateResponse {
     channel?: Channel;
@@ -353,17 +349,38 @@ export interface ChannelReadResponse {
 export interface ChannelInviteRequest {
     channel?: string;
     recipients?: Array<string>;
-    sender?: string;
 }
 export interface ChannelInviteResponse {
     message?: Message;
 }
 export interface RelayRequest {
-    keys?: Array<string>;
 }
 export interface RelayOutput {
-    kid?: string;
+    channel?: string;
     index?: number;
+}
+export interface Collection {
+    path?: string;
+}
+export interface CollectionsRequest {
+    parent?: string;
+    db?: string;
+}
+export interface CollectionsResponse {
+    collections?: Array<Collection>;
+}
+export interface Document {
+    path?: string;
+    value?: string;
+    createdAt?: number;
+    updatedAt?: number;
+}
+export interface DocumentsRequest {
+    path?: string;
+    db?: string;
+}
+export interface DocumentsResponse {
+    documents?: Array<Document>;
 }
 export interface RPCService {
     AuthSetup: (r: AuthSetupRequest) => AuthSetupResponse;
@@ -406,4 +423,6 @@ export interface RPCService {
         value: RelayOutput;
         done: boolean;
     }) => void) => void;
+    Collections: (r: CollectionsRequest) => CollectionsResponse;
+    Documents: (r: DocumentsRequest) => DocumentsResponse;
 }
