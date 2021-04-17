@@ -1,14 +1,16 @@
-export declare enum AuthStatus {
-    AUTH_UNKNOWN = "AUTH_UNKNOWN",
-    AUTH_SETUP_NEEDED = "AUTH_SETUP_NEEDED",
-    AUTH_UNLOCKED = "AUTH_UNLOCKED",
-    AUTH_LOCKED = "AUTH_LOCKED"
-}
 export declare enum AuthType {
     UNKNOWN_AUTH = "UNKNOWN_AUTH",
     PASSWORD_AUTH = "PASSWORD_AUTH",
     PAPER_KEY_AUTH = "PAPER_KEY_AUTH",
     FIDO2_HMAC_SECRET_AUTH = "FIDO2_HMAC_SECRET_AUTH"
+}
+export declare enum AccountStatus {
+    ACCOUNT_UNKNOWN = "ACCOUNT_UNKNOWN",
+    ACCOUNT_SETUP_NEEDED = "ACCOUNT_SETUP_NEEDED",
+    ACCOUNT_UNVERIFIED = "ACCOUNT_UNVERIFIED",
+    ACCOUNT_ORG_NEEDED = "ACCOUNT_ORG_NEEDED",
+    ACCOUNT_REGISTERED = "ACCOUNT_REGISTERED",
+    ACCOUNT_LOCKED = "ACCOUNT_LOCKED"
 }
 export declare enum SortDirection {
     ASC = "ASC",
@@ -42,12 +44,20 @@ export declare enum MessageStatus {
     MESSAGE_PENDING = "MESSAGE_PENDING",
     MESSAGE_ERROR = "MESSAGE_ERROR"
 }
-export interface AuthSetupRequest {
-    secret?: string;
-    type?: AuthType;
-    device?: string;
+export interface AccountVerifyRequest {
+    code?: string;
 }
-export interface AuthSetupResponse {
+export interface AccountVerifyResponse {
+}
+export interface AccountCreateRequest {
+    email?: string;
+    password?: string;
+    remember?: boolean;
+    accountKey?: string;
+    clientKey?: string;
+}
+export interface AccountCreateResponse {
+    authToken?: string;
 }
 export interface AuthUnlockRequest {
     secret?: string;
@@ -61,20 +71,19 @@ export interface AuthLockRequest {
 }
 export interface AuthLockResponse {
 }
-export interface AuthResetRequest {
-    appName?: string;
+export interface AccountStatusRequest {
 }
-export interface AuthResetResponse {
+export interface AccountStatusResponse {
+    status?: AccountStatus;
 }
-export interface StatusRequest {
+export interface Account {
+    kid?: string;
+    email?: string;
+    verified?: boolean;
 }
-export interface StatusResponse {
-    version?: string;
-    appName?: string;
-    exe?: string;
-    authStatus?: AuthStatus;
-    sync?: boolean;
-    fido2?: boolean;
+export interface Org {
+    id?: string;
+    domain?: string;
 }
 export interface KeyGenerateRequest {
     type?: string;
@@ -213,38 +222,6 @@ export interface RandPasswordRequest {
 export interface RandPasswordResponse {
     password?: string;
 }
-export interface AuthProvisionRequest {
-    secret?: string;
-    type?: AuthType;
-    device?: string;
-    generate?: boolean;
-}
-export interface AuthProvisionResponse {
-    provision?: AuthProvision;
-}
-export interface AuthDeprovisionRequest {
-    id?: string;
-}
-export interface AuthDeprovisionResponse {
-}
-export interface AuthPasswordChangeRequest {
-    old?: string;
-    new?: string;
-}
-export interface AuthPasswordChangeResponse {
-}
-export interface AuthProvision {
-    id?: string;
-    type?: AuthType;
-    createdAt?: number;
-    aaguid?: string;
-    noPin?: boolean;
-}
-export interface AuthProvisionsRequest {
-}
-export interface AuthProvisionsResponse {
-    provisions?: Array<AuthProvision>;
-}
 export interface KeySearchRequest {
     query?: string;
 }
@@ -331,6 +308,7 @@ export interface ChannelsResponse {
 }
 export interface ChannelCreateRequest {
     name?: string;
+    private?: boolean;
 }
 export interface ChannelCreateResponse {
     channel?: Channel;
@@ -382,12 +360,47 @@ export interface DocumentsRequest {
 export interface DocumentsResponse {
     documents?: Array<Document>;
 }
+export interface OrgKeyRequest {
+    domain?: string;
+}
+export interface OrgKeyResponse {
+    kid?: string;
+    created?: boolean;
+    verified?: boolean;
+}
+export interface OrgSignRequest {
+    domain?: string;
+}
+export interface OrgSignResponse {
+    sig?: string;
+}
+export interface OrgCreateRequest {
+    domain?: string;
+}
+export interface OrgCreateResponse {
+}
+export interface OrgInvite {
+    org?: Org;
+    invitedBy?: string;
+}
+export interface OrgInvitesRequest {
+}
+export interface OrgInvitesResponse {
+    invites?: Array<OrgInvite>;
+}
+export interface OrgInviteAcceptRequest {
+    id?: string;
+}
+export interface OrgInviteAcceptResponse {
+}
 export interface RPCService {
-    AuthSetup: (r: AuthSetupRequest) => AuthSetupResponse;
+    AccountCreate: (r: AccountCreateRequest) => AccountCreateResponse;
+    AccountVerify: (r: AccountVerifyRequest) => AccountVerifyResponse;
+    AccountStatus: (r: AccountStatusRequest) => AccountStatusResponse;
     AuthUnlock: (r: AuthUnlockRequest) => AuthUnlockResponse;
     AuthLock: (r: AuthLockRequest) => AuthLockResponse;
-    AuthReset: (r: AuthResetRequest) => AuthResetResponse;
-    Status: (r: StatusRequest) => StatusResponse;
+    Rand: (r: RandRequest) => RandResponse;
+    RandPassword: (r: RandPasswordRequest) => RandPasswordResponse;
     KeyGenerate: (r: KeyGenerateRequest) => KeyGenerateResponse;
     Keys: (r: KeysRequest) => KeysResponse;
     Key: (r: KeyRequest) => KeyResponse;
@@ -400,17 +413,11 @@ export interface RPCService {
     UserService: (r: UserServiceRequest) => UserServiceResponse;
     UserSign: (r: UserSignRequest) => UserSignResponse;
     UserAdd: (r: UserAddRequest) => UserAddResponse;
-    Rand: (r: RandRequest) => RandResponse;
-    RandPassword: (r: RandPasswordRequest) => RandPasswordResponse;
     Pull: (r: PullRequest) => PullResponse;
     Sigchain: (r: SigchainRequest) => SigchainResponse;
     Statement: (r: StatementRequest) => StatementResponse;
     StatementCreate: (r: StatementCreateRequest) => StatementCreateResponse;
     StatementRevoke: (r: StatementRevokeRequest) => StatementRevokeResponse;
-    AuthProvision: (r: AuthProvisionRequest) => AuthProvisionResponse;
-    AuthDeprovision: (r: AuthDeprovisionRequest) => AuthDeprovisionResponse;
-    AuthProvisions: (r: AuthProvisionsRequest) => AuthProvisionsResponse;
-    AuthPasswordChange: (r: AuthPasswordChangeRequest) => AuthPasswordChangeResponse;
     Channels: (r: ChannelsRequest) => ChannelsResponse;
     ChannelCreate: (r: ChannelCreateRequest) => ChannelCreateResponse;
     ChannelInvite: (r: ChannelInviteRequest) => ChannelInviteResponse;
@@ -425,4 +432,9 @@ export interface RPCService {
     }) => void) => void;
     Collections: (r: CollectionsRequest) => CollectionsResponse;
     Documents: (r: DocumentsRequest) => DocumentsResponse;
+    OrgKey: (r: OrgKeyRequest) => OrgKeyResponse;
+    OrgCreate: (r: OrgCreateRequest) => OrgCreateResponse;
+    OrgSign: (r: OrgSignRequest) => OrgSignResponse;
+    OrgInvites: (r: OrgInvitesRequest) => OrgInvitesResponse;
+    OrgInviteAccept: (r: OrgInviteAcceptRequest) => OrgInviteAcceptResponse;
 }

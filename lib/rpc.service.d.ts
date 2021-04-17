@@ -17,11 +17,13 @@ export declare class RPCService extends EventEmitter {
     constructor(serviceFn: () => ServiceClient);
     service(): ServiceClient;
     emitError(err: RPCError): void;
-    authSetup(req: service.AuthSetupRequest): Promise<service.AuthSetupResponse>;
+    accountCreate(req: service.AccountCreateRequest): Promise<service.AccountCreateResponse>;
+    accountVerify(req: service.AccountVerifyRequest): Promise<service.AccountVerifyResponse>;
+    accountStatus(req: service.AccountStatusRequest): Promise<service.AccountStatusResponse>;
     authUnlock(req: service.AuthUnlockRequest): Promise<service.AuthUnlockResponse>;
     authLock(req: service.AuthLockRequest): Promise<service.AuthLockResponse>;
-    authReset(req: service.AuthResetRequest): Promise<service.AuthResetResponse>;
-    status(req: service.StatusRequest): Promise<service.StatusResponse>;
+    rand(req: service.RandRequest): Promise<service.RandResponse>;
+    randPassword(req: service.RandPasswordRequest): Promise<service.RandPasswordResponse>;
     keyGenerate(req: service.KeyGenerateRequest): Promise<service.KeyGenerateResponse>;
     keys(req: service.KeysRequest): Promise<service.KeysResponse>;
     key(req: service.KeyRequest): Promise<service.KeyResponse>;
@@ -34,17 +36,11 @@ export declare class RPCService extends EventEmitter {
     userService(req: service.UserServiceRequest): Promise<service.UserServiceResponse>;
     userSign(req: service.UserSignRequest): Promise<service.UserSignResponse>;
     userAdd(req: service.UserAddRequest): Promise<service.UserAddResponse>;
-    rand(req: service.RandRequest): Promise<service.RandResponse>;
-    randPassword(req: service.RandPasswordRequest): Promise<service.RandPasswordResponse>;
     pull(req: service.PullRequest): Promise<service.PullResponse>;
     sigchain(req: service.SigchainRequest): Promise<service.SigchainResponse>;
     statement(req: service.StatementRequest): Promise<service.StatementResponse>;
     statementCreate(req: service.StatementCreateRequest): Promise<service.StatementCreateResponse>;
     statementRevoke(req: service.StatementRevokeRequest): Promise<service.StatementRevokeResponse>;
-    authProvision(req: service.AuthProvisionRequest): Promise<service.AuthProvisionResponse>;
-    authDeprovision(req: service.AuthDeprovisionRequest): Promise<service.AuthDeprovisionResponse>;
-    authProvisions(req: service.AuthProvisionsRequest): Promise<service.AuthProvisionsResponse>;
-    authPasswordChange(req: service.AuthPasswordChangeRequest): Promise<service.AuthPasswordChangeResponse>;
     channels(req: service.ChannelsRequest): Promise<service.ChannelsResponse>;
     channelCreate(req: service.ChannelCreateRequest): Promise<service.ChannelCreateResponse>;
     channelInvite(req: service.ChannelInviteRequest): Promise<service.ChannelInviteResponse>;
@@ -56,4 +52,9 @@ export declare class RPCService extends EventEmitter {
     relay(req: service.RelayRequest): ClientReadableStream<service.RelayOutput>;
     collections(req: service.CollectionsRequest): Promise<service.CollectionsResponse>;
     documents(req: service.DocumentsRequest): Promise<service.DocumentsResponse>;
+    orgKey(req: service.OrgKeyRequest): Promise<service.OrgKeyResponse>;
+    orgCreate(req: service.OrgCreateRequest): Promise<service.OrgCreateResponse>;
+    orgSign(req: service.OrgSignRequest): Promise<service.OrgSignResponse>;
+    orgInvites(req: service.OrgInvitesRequest): Promise<service.OrgInvitesResponse>;
+    orgInviteAccept(req: service.OrgInviteAcceptRequest): Promise<service.OrgInviteAcceptResponse>;
 }

@@ -10,9 +10,17 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
     nested: {
       RPC: {
         methods: {
-          AuthSetup: {
-            requestType: "AuthSetupRequest",
-            responseType: "AuthSetupResponse"
+          AccountCreate: {
+            requestType: "AccountCreateRequest",
+            responseType: "AccountCreateResponse"
+          },
+          AccountVerify: {
+            requestType: "AccountVerifyRequest",
+            responseType: "AccountVerifyResponse"
+          },
+          AccountStatus: {
+            requestType: "AccountStatusRequest",
+            responseType: "AccountStatusResponse"
           },
           AuthUnlock: {
             requestType: "AuthUnlockRequest",
@@ -22,13 +30,13 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
             requestType: "AuthLockRequest",
             responseType: "AuthLockResponse"
           },
-          AuthReset: {
-            requestType: "AuthResetRequest",
-            responseType: "AuthResetResponse"
+          Rand: {
+            requestType: "RandRequest",
+            responseType: "RandResponse"
           },
-          Status: {
-            requestType: "StatusRequest",
-            responseType: "StatusResponse"
+          RandPassword: {
+            requestType: "RandPasswordRequest",
+            responseType: "RandPasswordResponse"
           },
           KeyGenerate: {
             requestType: "KeyGenerateRequest",
@@ -78,14 +86,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
             requestType: "UserAddRequest",
             responseType: "UserAddResponse"
           },
-          Rand: {
-            requestType: "RandRequest",
-            responseType: "RandResponse"
-          },
-          RandPassword: {
-            requestType: "RandPasswordRequest",
-            responseType: "RandPasswordResponse"
-          },
           Pull: {
             requestType: "PullRequest",
             responseType: "PullResponse"
@@ -105,22 +105,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
           StatementRevoke: {
             requestType: "StatementRevokeRequest",
             responseType: "StatementRevokeResponse"
-          },
-          AuthProvision: {
-            requestType: "AuthProvisionRequest",
-            responseType: "AuthProvisionResponse"
-          },
-          AuthDeprovision: {
-            requestType: "AuthDeprovisionRequest",
-            responseType: "AuthDeprovisionResponse"
-          },
-          AuthProvisions: {
-            requestType: "AuthProvisionsRequest",
-            responseType: "AuthProvisionsResponse"
-          },
-          AuthPasswordChange: {
-            requestType: "AuthPasswordChangeRequest",
-            responseType: "AuthPasswordChangeResponse"
           },
           Channels: {
             requestType: "ChannelsRequest",
@@ -166,18 +150,70 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
           Documents: {
             requestType: "DocumentsRequest",
             responseType: "DocumentsResponse"
+          },
+          OrgKey: {
+            requestType: "OrgKeyRequest",
+            responseType: "OrgKeyResponse"
+          },
+          OrgCreate: {
+            requestType: "OrgCreateRequest",
+            responseType: "OrgCreateResponse"
+          },
+          OrgSign: {
+            requestType: "OrgSignRequest",
+            responseType: "OrgSignResponse"
+          },
+          OrgInvites: {
+            requestType: "OrgInvitesRequest",
+            responseType: "OrgInvitesResponse"
+          },
+          OrgInviteAccept: {
+            requestType: "OrgInviteAcceptRequest",
+            responseType: "OrgInviteAcceptResponse"
           }
         }
       },
-      AuthStatus: {
-        options: {
-          "(go.enum).name": "AuthStatus"
-        },
-        values: {
-          AUTH_UNKNOWN: 0,
-          AUTH_SETUP_NEEDED: 1,
-          AUTH_UNLOCKED: 2,
-          AUTH_LOCKED: 3
+      AccountVerifyRequest: {
+        fields: {
+          code: {
+            type: "string",
+            id: 1
+          }
+        }
+      },
+      AccountVerifyResponse: {
+        fields: {}
+      },
+      AccountCreateRequest: {
+        fields: {
+          email: {
+            type: "string",
+            id: 1
+          },
+          password: {
+            type: "string",
+            id: 2
+          },
+          remember: {
+            type: "bool",
+            id: 3
+          },
+          accountKey: {
+            type: "string",
+            id: 10
+          },
+          clientKey: {
+            type: "string",
+            id: 11
+          }
+        }
+      },
+      AccountCreateResponse: {
+        fields: {
+          authToken: {
+            type: "string",
+            id: 1
+          }
         }
       },
       AuthType: {
@@ -190,25 +226,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
           PAPER_KEY_AUTH: 11,
           FIDO2_HMAC_SECRET_AUTH: 20
         }
-      },
-      AuthSetupRequest: {
-        fields: {
-          secret: {
-            type: "string",
-            id: 1
-          },
-          type: {
-            type: "AuthType",
-            id: 2
-          },
-          device: {
-            type: "string",
-            id: 5
-          }
-        }
-      },
-      AuthSetupResponse: {
-        fields: {}
       },
       AuthUnlockRequest: {
         fields: {
@@ -240,48 +257,61 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
       AuthLockResponse: {
         fields: {}
       },
-      AuthResetRequest: {
+      AccountStatus: {
+        options: {
+          "(go.enum).name": "AccountStatus"
+        },
+        values: {
+          ACCOUNT_UNKNOWN: 0,
+          ACCOUNT_SETUP_NEEDED: 1,
+          ACCOUNT_UNVERIFIED: 2,
+          ACCOUNT_ORG_NEEDED: 3,
+          ACCOUNT_REGISTERED: 4,
+          ACCOUNT_LOCKED: 5
+        }
+      },
+      AccountStatusRequest: {
+        fields: {}
+      },
+      AccountStatusResponse: {
         fields: {
-          appName: {
-            type: "string",
+          status: {
+            type: "AccountStatus",
             id: 1
           }
         }
       },
-      AuthResetResponse: {
-        fields: {}
-      },
-      StatusRequest: {
-        fields: {}
-      },
-      StatusResponse: {
+      Account: {
         fields: {
-          version: {
+          kid: {
             type: "string",
-            id: 1
+            id: 1,
+            options: {
+              "(go.field).name": "KID"
+            }
           },
-          appName: {
+          email: {
             type: "string",
             id: 2
           },
-          exe: {
+          verified: {
+            type: "bool",
+            id: 3
+          }
+        }
+      },
+      Org: {
+        fields: {
+          id: {
             type: "string",
-            id: 4
-          },
-          authStatus: {
-            type: "AuthStatus",
-            id: 5
-          },
-          sync: {
-            type: "bool",
-            id: 6
-          },
-          fido2: {
-            type: "bool",
-            id: 20,
+            id: 1,
             options: {
-              "(go.field).name": "FIDO2"
+              "(go.field).name": "ID"
             }
+          },
+          domain: {
+            type: "string",
+            id: 2
           }
         }
       },
@@ -808,105 +838,6 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
           }
         }
       },
-      AuthProvisionRequest: {
-        fields: {
-          secret: {
-            type: "string",
-            id: 1
-          },
-          type: {
-            type: "AuthType",
-            id: 2
-          },
-          device: {
-            type: "string",
-            id: 5
-          },
-          generate: {
-            type: "bool",
-            id: 7
-          }
-        }
-      },
-      AuthProvisionResponse: {
-        fields: {
-          provision: {
-            type: "AuthProvision",
-            id: 1
-          }
-        }
-      },
-      AuthDeprovisionRequest: {
-        fields: {
-          id: {
-            type: "string",
-            id: 1,
-            options: {
-              "(go.field).name": "ID"
-            }
-          }
-        }
-      },
-      AuthDeprovisionResponse: {
-        fields: {}
-      },
-      AuthPasswordChangeRequest: {
-        fields: {
-          old: {
-            type: "string",
-            id: 1
-          },
-          "new": {
-            type: "string",
-            id: 2
-          }
-        }
-      },
-      AuthPasswordChangeResponse: {
-        fields: {}
-      },
-      AuthProvision: {
-        fields: {
-          id: {
-            type: "string",
-            id: 1,
-            options: {
-              "(go.field).name": "ID"
-            }
-          },
-          type: {
-            type: "AuthType",
-            id: 2
-          },
-          createdAt: {
-            type: "int64",
-            id: 3
-          },
-          aaguid: {
-            type: "string",
-            id: 100,
-            options: {
-              "(go.field).name": "AAGUID"
-            }
-          },
-          noPin: {
-            type: "bool",
-            id: 101
-          }
-        }
-      },
-      AuthProvisionsRequest: {
-        fields: {}
-      },
-      AuthProvisionsResponse: {
-        fields: {
-          provisions: {
-            rule: "repeated",
-            type: "AuthProvision",
-            id: 1
-          }
-        }
-      },
       KeySearchRequest: {
         fields: {
           query: {
@@ -1199,6 +1130,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
           name: {
             type: "string",
             id: 1
+          },
+          "private": {
+            type: "bool",
+            id: 2
           }
         }
       },
@@ -1347,6 +1282,98 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
             id: 1
           }
         }
+      },
+      OrgKeyRequest: {
+        fields: {
+          domain: {
+            type: "string",
+            id: 1
+          }
+        }
+      },
+      OrgKeyResponse: {
+        fields: {
+          kid: {
+            type: "string",
+            id: 1,
+            options: {
+              "(go.field).name": "KID"
+            }
+          },
+          created: {
+            type: "bool",
+            id: 2
+          },
+          verified: {
+            type: "bool",
+            id: 3
+          }
+        }
+      },
+      OrgSignRequest: {
+        fields: {
+          domain: {
+            type: "string",
+            id: 1
+          }
+        }
+      },
+      OrgSignResponse: {
+        fields: {
+          sig: {
+            type: "string",
+            id: 1
+          }
+        }
+      },
+      OrgCreateRequest: {
+        fields: {
+          domain: {
+            type: "string",
+            id: 1
+          }
+        }
+      },
+      OrgCreateResponse: {
+        fields: {}
+      },
+      OrgInvite: {
+        fields: {
+          org: {
+            type: "Org",
+            id: 1
+          },
+          invitedBy: {
+            type: "string",
+            id: 2
+          }
+        }
+      },
+      OrgInvitesRequest: {
+        fields: {}
+      },
+      OrgInvitesResponse: {
+        fields: {
+          invites: {
+            rule: "repeated",
+            type: "OrgInvite",
+            id: 1
+          }
+        }
+      },
+      OrgInviteAcceptRequest: {
+        fields: {
+          id: {
+            type: "string",
+            id: 1,
+            options: {
+              "(go.field).name": "ID"
+            }
+          }
+        }
+      },
+      OrgInviteAcceptResponse: {
+        fields: {}
       }
     }
   }
