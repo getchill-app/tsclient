@@ -17,13 +17,15 @@ export declare class RPCService extends EventEmitter {
     constructor(serviceFn: () => ServiceClient);
     service(): ServiceClient;
     emitError(err: RPCError): void;
-    accountCreate(req: service.AccountCreateRequest): Promise<service.AccountCreateResponse>;
-    accountVerify(req: service.AccountVerifyRequest): Promise<service.AccountVerifyResponse>;
-    accountStatus(req: service.AccountStatusRequest): Promise<service.AccountStatusResponse>;
+    authStatus(req: service.AuthStatusRequest): Promise<service.AuthStatusResponse>;
     authUnlock(req: service.AuthUnlockRequest): Promise<service.AuthUnlockResponse>;
     authLock(req: service.AuthLockRequest): Promise<service.AuthLockResponse>;
     rand(req: service.RandRequest): Promise<service.RandResponse>;
     randPassword(req: service.RandPasswordRequest): Promise<service.RandPasswordResponse>;
+    accountRegister(req: service.AccountRegisterRequest): Promise<service.AccountRegisterResponse>;
+    accountCreate(req: service.AccountCreateRequest): Promise<service.AccountCreateResponse>;
+    accountStatus(req: service.AccountStatusRequest): Promise<service.AccountStatusResponse>;
+    accountSetUsername(req: service.AccountSetUsernameRequest): Promise<service.AccountSetUsernameResponse>;
     keyGenerate(req: service.KeyGenerateRequest): Promise<service.KeyGenerateResponse>;
     keys(req: service.KeysRequest): Promise<service.KeysResponse>;
     key(req: service.KeyRequest): Promise<service.KeyResponse>;
@@ -52,9 +54,5 @@ export declare class RPCService extends EventEmitter {
     relay(req: service.RelayRequest): ClientReadableStream<service.RelayOutput>;
     collections(req: service.CollectionsRequest): Promise<service.CollectionsResponse>;
     documents(req: service.DocumentsRequest): Promise<service.DocumentsResponse>;
-    orgKey(req: service.OrgKeyRequest): Promise<service.OrgKeyResponse>;
-    orgCreate(req: service.OrgCreateRequest): Promise<service.OrgCreateResponse>;
-    orgSign(req: service.OrgSignRequest): Promise<service.OrgSignResponse>;
-    orgInvites(req: service.OrgInvitesRequest): Promise<service.OrgInvitesResponse>;
-    orgInviteAccept(req: service.OrgInviteAcceptRequest): Promise<service.OrgInviteAcceptResponse>;
+    teamInvites(req: service.TeamInvitesRequest): Promise<service.TeamInvitesResponse>;
 }

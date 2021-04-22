@@ -4,13 +4,18 @@ export enum AuthType {
     PAPER_KEY_AUTH = "PAPER_KEY_AUTH",
     FIDO2_HMAC_SECRET_AUTH = "FIDO2_HMAC_SECRET_AUTH",
 }
+export enum AuthStatus {
+    AUTH_UNKNOWN = "AUTH_UNKNOWN",
+    AUTH_SETUP_NEEDED = "AUTH_SETUP_NEEDED",
+    AUTH_UNLOCKED = "AUTH_UNLOCKED",
+    AUTH_LOCKED = "AUTH_LOCKED",
+}
 export enum AccountStatus {
     ACCOUNT_UNKNOWN = "ACCOUNT_UNKNOWN",
-    ACCOUNT_SETUP_NEEDED = "ACCOUNT_SETUP_NEEDED",
-    ACCOUNT_UNVERIFIED = "ACCOUNT_UNVERIFIED",
-    ACCOUNT_ORG_NEEDED = "ACCOUNT_ORG_NEEDED",
-    ACCOUNT_REGISTERED = "ACCOUNT_REGISTERED",
-    ACCOUNT_LOCKED = "ACCOUNT_LOCKED",
+    ACCOUNT_CREATE = "ACCOUNT_CREATE",
+    ACCOUNT_USERNAME = "ACCOUNT_USERNAME",
+    ACCOUNT_ACCEPTANCE = "ACCOUNT_ACCEPTANCE",
+    ACCOUNT_COMPLETE = "ACCOUNT_COMPLETE",
 }
 export enum SortDirection {
     ASC = "ASC",
@@ -44,19 +49,16 @@ export enum MessageStatus {
     MESSAGE_PENDING = "MESSAGE_PENDING",
     MESSAGE_ERROR = "MESSAGE_ERROR",
 }
-export interface AccountVerifyRequest {
-    code?: string;
+export interface AccountRegisterRequest {
+    email?: string;
 }
 
-export interface AccountVerifyResponse {
+export interface AccountRegisterResponse {
 }
 
 export interface AccountCreateRequest {
     email?: string;
-    // Password registered.
-    password?: string;
-    // Remember in keychain.
-    remember?: boolean;
+    code?: string;
     // AccountKey is optional (generated if not specified).
     accountKey?: string;
     // ClientKey is optional (generated if not specified).
@@ -64,7 +66,20 @@ export interface AccountCreateRequest {
 }
 
 export interface AccountCreateResponse {
-    authToken?: string;
+}
+
+export interface AccountSetUsernameRequest {
+    username?: string;
+}
+
+export interface AccountSetUsernameResponse {
+}
+
+export interface AuthStatusRequest {
+}
+
+export interface AuthStatusResponse {
+    status?: AuthStatus;
 }
 
 export interface AuthUnlockRequest {
@@ -100,7 +115,7 @@ export interface Account {
     verified?: boolean;
 }
 
-export interface Org {
+export interface Team {
     id?: string;
     domain?: string;
 }
@@ -361,7 +376,7 @@ export interface StatementRevokeResponse {
 
 export interface Message {
     id?: string;
-    sender?: Key;
+    sender?: string;
     text?: Array<string>;
     status?: MessageStatus;
     createdAt?: number;
@@ -486,58 +501,28 @@ export interface DocumentsResponse {
     documents?: Array<Document>;
 }
 
-export interface OrgKeyRequest {
-    domain?: string;
-}
-
-export interface OrgKeyResponse {
-    kid?: string;
-    created?: boolean;
-    verified?: boolean;
-}
-
-export interface OrgSignRequest {
-    domain?: string;
-}
-
-export interface OrgSignResponse {
-    sig?: string;
-}
-
-export interface OrgCreateRequest {
-    domain?: string;
-}
-
-export interface OrgCreateResponse {
-}
-
-export interface OrgInvite {
-    org?: Org;
+export interface TeamInvite {
+    team?: Team;
     invitedBy?: string;
 }
 
-export interface OrgInvitesRequest {
+export interface TeamInvitesRequest {
 }
 
-export interface OrgInvitesResponse {
-    invites?: Array<OrgInvite>;
-}
-
-export interface OrgInviteAcceptRequest {
-    id?: string;
-}
-
-export interface OrgInviteAcceptResponse {
+export interface TeamInvitesResponse {
+    invites?: Array<TeamInvite>;
 }
 
 export interface RPCService {
-    AccountCreate: (r:AccountCreateRequest) => AccountCreateResponse;
-    AccountVerify: (r:AccountVerifyRequest) => AccountVerifyResponse;
-    AccountStatus: (r:AccountStatusRequest) => AccountStatusResponse;
+    AuthStatus: (r:AuthStatusRequest) => AuthStatusResponse;
     AuthUnlock: (r:AuthUnlockRequest) => AuthUnlockResponse;
     AuthLock: (r:AuthLockRequest) => AuthLockResponse;
     Rand: (r:RandRequest) => RandResponse;
     RandPassword: (r:RandPasswordRequest) => RandPasswordResponse;
+    AccountRegister: (r:AccountRegisterRequest) => AccountRegisterResponse;
+    AccountCreate: (r:AccountCreateRequest) => AccountCreateResponse;
+    AccountStatus: (r:AccountStatusRequest) => AccountStatusResponse;
+    AccountSetUsername: (r:AccountSetUsernameRequest) => AccountSetUsernameResponse;
     KeyGenerate: (r:KeyGenerateRequest) => KeyGenerateResponse;
     Keys: (r:KeysRequest) => KeysResponse;
     Key: (r:KeyRequest) => KeyResponse;
@@ -566,9 +551,5 @@ export interface RPCService {
     Relay: (r:RelayRequest, cb:(a:{value: RelayOutput, done: boolean}) => void) => void;
     Collections: (r:CollectionsRequest) => CollectionsResponse;
     Documents: (r:DocumentsRequest) => DocumentsResponse;
-    OrgKey: (r:OrgKeyRequest) => OrgKeyResponse;
-    OrgCreate: (r:OrgCreateRequest) => OrgCreateResponse;
-    OrgSign: (r:OrgSignRequest) => OrgSignResponse;
-    OrgInvites: (r:OrgInvitesRequest) => OrgInvitesResponse;
-    OrgInviteAccept: (r:OrgInviteAcceptRequest) => OrgInviteAcceptResponse;
+    TeamInvites: (r:TeamInvitesRequest) => TeamInvitesResponse;
 }

@@ -10,17 +10,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
     nested: {
       RPC: {
         methods: {
-          AccountCreate: {
-            requestType: "AccountCreateRequest",
-            responseType: "AccountCreateResponse"
-          },
-          AccountVerify: {
-            requestType: "AccountVerifyRequest",
-            responseType: "AccountVerifyResponse"
-          },
-          AccountStatus: {
-            requestType: "AccountStatusRequest",
-            responseType: "AccountStatusResponse"
+          AuthStatus: {
+            requestType: "AuthStatusRequest",
+            responseType: "AuthStatusResponse"
           },
           AuthUnlock: {
             requestType: "AuthUnlockRequest",
@@ -37,6 +29,22 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
           RandPassword: {
             requestType: "RandPasswordRequest",
             responseType: "RandPasswordResponse"
+          },
+          AccountRegister: {
+            requestType: "AccountRegisterRequest",
+            responseType: "AccountRegisterResponse"
+          },
+          AccountCreate: {
+            requestType: "AccountCreateRequest",
+            responseType: "AccountCreateResponse"
+          },
+          AccountStatus: {
+            requestType: "AccountStatusRequest",
+            responseType: "AccountStatusResponse"
+          },
+          AccountSetUsername: {
+            requestType: "AccountSetUsernameRequest",
+            responseType: "AccountSetUsernameResponse"
           },
           KeyGenerate: {
             requestType: "KeyGenerateRequest",
@@ -151,37 +159,21 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
             requestType: "DocumentsRequest",
             responseType: "DocumentsResponse"
           },
-          OrgKey: {
-            requestType: "OrgKeyRequest",
-            responseType: "OrgKeyResponse"
-          },
-          OrgCreate: {
-            requestType: "OrgCreateRequest",
-            responseType: "OrgCreateResponse"
-          },
-          OrgSign: {
-            requestType: "OrgSignRequest",
-            responseType: "OrgSignResponse"
-          },
-          OrgInvites: {
-            requestType: "OrgInvitesRequest",
-            responseType: "OrgInvitesResponse"
-          },
-          OrgInviteAccept: {
-            requestType: "OrgInviteAcceptRequest",
-            responseType: "OrgInviteAcceptResponse"
+          TeamInvites: {
+            requestType: "TeamInvitesRequest",
+            responseType: "TeamInvitesResponse"
           }
         }
       },
-      AccountVerifyRequest: {
+      AccountRegisterRequest: {
         fields: {
-          code: {
+          email: {
             type: "string",
             id: 1
           }
         }
       },
-      AccountVerifyResponse: {
+      AccountRegisterResponse: {
         fields: {}
       },
       AccountCreateRequest: {
@@ -190,13 +182,9 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
             type: "string",
             id: 1
           },
-          password: {
+          code: {
             type: "string",
             id: 2
-          },
-          remember: {
-            type: "bool",
-            id: 3
           },
           accountKey: {
             type: "string",
@@ -209,12 +197,18 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
         }
       },
       AccountCreateResponse: {
+        fields: {}
+      },
+      AccountSetUsernameRequest: {
         fields: {
-          authToken: {
+          username: {
             type: "string",
             id: 1
           }
         }
+      },
+      AccountSetUsernameResponse: {
+        fields: {}
       },
       AuthType: {
         options: {
@@ -225,6 +219,28 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
           PASSWORD_AUTH: 10,
           PAPER_KEY_AUTH: 11,
           FIDO2_HMAC_SECRET_AUTH: 20
+        }
+      },
+      AuthStatus: {
+        options: {
+          "(go.enum).name": "AuthStatus"
+        },
+        values: {
+          AUTH_UNKNOWN: 0,
+          AUTH_SETUP_NEEDED: 1,
+          AUTH_UNLOCKED: 2,
+          AUTH_LOCKED: 3
+        }
+      },
+      AuthStatusRequest: {
+        fields: {}
+      },
+      AuthStatusResponse: {
+        fields: {
+          status: {
+            type: "AuthStatus",
+            id: 1
+          }
         }
       },
       AuthUnlockRequest: {
@@ -263,11 +279,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
         },
         values: {
           ACCOUNT_UNKNOWN: 0,
-          ACCOUNT_SETUP_NEEDED: 1,
-          ACCOUNT_UNVERIFIED: 2,
-          ACCOUNT_ORG_NEEDED: 3,
-          ACCOUNT_REGISTERED: 4,
-          ACCOUNT_LOCKED: 5
+          ACCOUNT_CREATE: 1,
+          ACCOUNT_USERNAME: 2,
+          ACCOUNT_ACCEPTANCE: 3,
+          ACCOUNT_COMPLETE: 4
         }
       },
       AccountStatusRequest: {
@@ -300,7 +315,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
           }
         }
       },
-      Org: {
+      Team: {
         fields: {
           id: {
             type: "string",
@@ -996,7 +1011,7 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
             }
           },
           sender: {
-            type: "Key",
+            type: "string",
             id: 2
           },
           text: {
@@ -1283,64 +1298,10 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
           }
         }
       },
-      OrgKeyRequest: {
+      TeamInvite: {
         fields: {
-          domain: {
-            type: "string",
-            id: 1
-          }
-        }
-      },
-      OrgKeyResponse: {
-        fields: {
-          kid: {
-            type: "string",
-            id: 1,
-            options: {
-              "(go.field).name": "KID"
-            }
-          },
-          created: {
-            type: "bool",
-            id: 2
-          },
-          verified: {
-            type: "bool",
-            id: 3
-          }
-        }
-      },
-      OrgSignRequest: {
-        fields: {
-          domain: {
-            type: "string",
-            id: 1
-          }
-        }
-      },
-      OrgSignResponse: {
-        fields: {
-          sig: {
-            type: "string",
-            id: 1
-          }
-        }
-      },
-      OrgCreateRequest: {
-        fields: {
-          domain: {
-            type: "string",
-            id: 1
-          }
-        }
-      },
-      OrgCreateResponse: {
-        fields: {}
-      },
-      OrgInvite: {
-        fields: {
-          org: {
-            type: "Org",
+          team: {
+            type: "Team",
             id: 1
           },
           invitedBy: {
@@ -1349,31 +1310,17 @@ const $root = ($protobuf.roots["default"] || ($protobuf.roots["default"] = new $
           }
         }
       },
-      OrgInvitesRequest: {
+      TeamInvitesRequest: {
         fields: {}
       },
-      OrgInvitesResponse: {
+      TeamInvitesResponse: {
         fields: {
           invites: {
             rule: "repeated",
-            type: "OrgInvite",
+            type: "TeamInvite",
             id: 1
           }
         }
-      },
-      OrgInviteAcceptRequest: {
-        fields: {
-          id: {
-            type: "string",
-            id: 1,
-            options: {
-              "(go.field).name": "ID"
-            }
-          }
-        }
-      },
-      OrgInviteAcceptResponse: {
-        fields: {}
       }
     }
   }
